@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Training System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Social Training System</h1>
+            <div class="progress-bar">
+                <div class="progress" id="conversationProgress"></div>
+            </div>
+        </header>
+
+        <!-- 开始界面 -->
+        <div id="startScreen" class="screen active">
+            <div class="start-content">
+                <h2>Welcome to Social Training System</h2>
+                <p>与NPC角色对话，提升您的沟通技巧</p>
+                <div class="character-selection">
+                    <h3>选择对话场景</h3>
+                    <div class="character-cards">
+                        <div class="character-card" data-character="noise">
+                            <div class="character-avatar">🎮</div>
+                            <h4>深夜游戏噪音冲突</h4>
+                            <p>学习如何处理室友间的噪音纠纷</p>
+                        </div>
+                        <div class="character-card" data-character="deadline">
+                            <div class="character-avatar">👨‍🏫</div>
+                            <h4>向严格教授请求延期</h4>
+                            <p>练习学术场景中的延期申请技巧</p>
+                        </div>
+                        <div class="character-card" data-character="slacker">
+                            <div class="character-avatar">😤</div>
+                            <h4>小组项目的"划水"成员</h4>
+                            <p>学习如何应对团队中的不公平分工</p>
+                        </div>
+                        <div class="character-card" data-character="debt">
+                            <div class="character-avatar">💰</div>
+                            <h4>借钱后迟迟不还的朋友</h4>
+                            <p>练习处理朋友间的金钱关系</p>
+                        </div>
+                        <div class="character-card" data-character="parent">
+                            <div class="character-avatar">👨‍👩‍👧‍👦</div>
+                            <h4>母亲对未来规划的期望冲突</h4>
+                            <p>学习如何与家人沟通职业选择</p>
+                        </div>
+                        <div class="character-card" data-character="grade">
+                            <div class="character-avatar">📝</div>
+                            <h4>期末成绩申诉</h4>
+                            <p>练习如何合理表达异议和维护权益</p>
+                        </div>
+                        <div class="character-card" data-character="research">
+                            <div class="character-avatar">🔬</div>
+                            <h4>课题方向分歧</h4>
+                            <p>学习处理学术合作中的意见不合</p>
+                        </div>
+                        <div class="character-card" data-character="gossip">
+                            <div class="character-avatar">😮</div>
+                            <h4>朋友背后说你坏话</h4>
+                            <p>练习应对人际关系中的信任问题</p>
+                        </div>
+                        <div class="character-card" data-character="heartbreak">
+                            <div class="character-avatar">💔</div>
+                            <h4>朋友失恋倾诉但你没时间</h4>
+                            <p>学习如何平衡友谊和个人时间</p>
+                        </div>
+                        <div class="character-card" data-character="cancelled">
+                            <div class="character-avatar">📱</div>
+                            <h4>被朋友临时放鸽子</h4>
+                            <p>练习如何处理被爽约的情况</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="startBtn" class="btn btn-primary" disabled>开始练习</button>
+            </div>
+        </div>
+
+        <!-- 对话界面 -->
+        <div id="conversationScreen" class="screen">
+            <div class="conversation-layout">
+                <div class="npc-panel">
+                    <div class="npc-info">
+                        <div class="npc-avatar" id="npcAvatar">👨‍💼</div>
+                        <div class="npc-details">
+                            <h3 id="npcName">部门经理</h3>
+                            <div class="npc-status">
+                                <span class="status-label">情绪状态:</span>
+                                <span id="npcEmotion" class="npc-emotion"></span>
+                                <!-- <div class="status-bar">
+                                    <div class="status-fill" id="moodBar"></div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="npc-message" id="npcMessage">
+                        您好！请坐。有什么事情想和我谈谈吗？
+                    </div>
+                    <div class="npc-state" id="npcState">
+                        <!-- NPC心理状态将在这里动态显示 -->
+                    </div>
+                    <div class="npc-resistance">
+                        <div class="resistance-meter">
+                            <canvas id="resistanceGauge" width="120" height="120"></canvas>
+                            <div class="resistance-info">
+                                <span class="resistance-label">抵抗性</span>
+                                <span class="resistance-value" id="resistanceValue">8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="conversation-panel">
+                    <button id="endConversationBtn" class="btn-end-conversation">结束对话</button>
+                    <div class="chat-history" id="chatHistory">
+                        <div class="message npc-message">
+                            <span class="message-text">您好！请坐。有什么事情想和我谈谈吗？</span>
+                        </div>
+                    </div>
+
+                    <div class="input-area">
+                        <div class="response-suggestions" id="responseSuggestions">
+                            <!-- 建议回复按钮将通过JavaScript动态生成 -->
+                        </div>
+                        <div class="custom-input">
+                            <textarea id="userInput" placeholder="输入您的回复..." rows="1"></textarea>
+                            <button id="sendBtn" class="btn btn-send">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-panel" id="feedbackPanel">
+                <h4>教学反馈</h4>
+                <div class="stage-info" id="stageInfo">
+                    <div class="stage-details">
+                        <div class="stage-progress">
+                            <span class="stage-label">对话阶段:</span>
+                            <span class="stage-value" id="currentStage">1</span>
+                            <div class="stage-bar">
+                                <div class="stage-fill" id="stageProgress"></div>
+                            </div>
+                        </div>
+                        <div class="stage-goal" id="stageGoal">
+                            <strong>当前目标:</strong> <span id="goalContent">等待开始对话...</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="feedbackContent" class="feedback-content">
+                    开始对话后，这里会显示实时的沟通教学反馈...
+                </div>
+            </div>
+        </div>
+
+        <!-- 评估报告界面 -->
+        <div id="reportScreen" class="screen">
+            <div class="report-content">
+                <h2>沟通能力评估报告</h2>
+                <div class="report-summary">
+                    <div class="score-circle">
+                        <span class="score-value" id="totalScore">85</span>
+                        <span class="score-label">综合评分</span>
+                    </div>
+                    <div class="conversation-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="messageCount">8</span>
+                            <span class="stat-label">对话轮数</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="duration">5:30</span>
+                            <span class="stat-label">对话时长</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-summary">
+                    <h3>综合评价</h3>
+                    <div class="evaluation-text" id="evaluationText">
+                        在本次沟通培训中，您表现出了良好的语言表达能力和情感理解能力。对话思路清晰，能够准确理解对方的意图并给出恰当的回应。建议在应变能力方面继续加强，尝试更多的沟通策略。
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="restartBtn" class="btn btn-secondary">重新开始</button>
+                    <button id="exportBtn" class="btn btn-primary">导出报告</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
